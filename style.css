@@ -94,15 +94,17 @@ ul {
   padding-left: 0;
 }
 
+/* ===== TASK ITEM ===== */
 li {
-  padding: 12px;
-  background: white;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  font-size: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: white;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   transition: 0.2s;
 }
 
@@ -115,18 +117,25 @@ li.completed {
   color: gray;
 }
 
-/* Buttons inside task items */
+li span {
+  flex: 1;
+}
+
+/* ===== TASK BUTTONS ===== */
 .task-btn {
-  background: none;
+  background: #f0f0f0;
   border: none;
   font-size: 18px;
   cursor: pointer;
-  margin-left: 8px;
-  transition: transform 0.2s;
+  padding: 6px;
+  border-radius: 50%;
+  margin-left: 5px;
+  transition: background 0.2s, transform 0.2s;
 }
 
 .task-btn:hover {
-  transform: scale(1.2);
+  background: #ddd;
+  transform: scale(1.1);
 }
 
 /* Completed tasks */
@@ -152,6 +161,11 @@ li.completed {
   input, button, li {
     font-size: 15px;
     padding: 12px;
+  }
+
+  .task-btn {
+    font-size: 16px;
+    padding: 5px;
   }
 }
 
