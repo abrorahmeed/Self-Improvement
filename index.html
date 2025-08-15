@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Self Improvement Tracker</title>
+</head>
+<body>
+  <h1>Login</h1>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="loginStatus"></p>
+
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+    // Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2GJ2B6zpaw6RVlIcpSIWO1XeUiuDDKnM",
+      authDomain: "selfimprovementda.firebaseapp.com",
+      projectId: "selfimprovementda",
+      storageBucket: "selfimprovementda.firebasestorage.app",
+      messagingSenderId: "227863604727",
+      appId: "1:227863604727:web:30b6a7067957ca6f13d2f2"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Login Function
+    window.login = function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          document.getElementById("loginStatus").innerText = "Login successful!";
+          console.log("User:", userCredential.user);
+        })
+        .catch((error) => {
+          document.getElementById("loginStatus").innerText = "Error: " + error.message;
+        });
+    }
+  </script>
+</body>
+</html>
