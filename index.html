@@ -2,9 +2,12 @@
 <html>
 <head>
   <title>Self Improvement Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- Login Page -->
   <div id="loginPage">
     <h1>Login</h1>
     <input id="email" type="email" placeholder="Email">
@@ -13,25 +16,35 @@
     <p id="loginStatus"></p>
   </div>
 
-  <div id="dashboard" style="display:none;">
-    <h2>Welcome, <span id="userEmail"></span></h2>
+  <!-- Dashboard -->
+  <div id="dashboard" style="display: none;">
+    <h1>Welcome</h1>
+    <button onclick="logout()">Logout</button>
 
-    <h3>Your Tasks</h3>
-    <ul id="myTasks"></ul>
-    <input id="newTask" placeholder="New task">
-    <button onclick="addTask()">Add Task</button>
+    <div class="task-container">
+      <!-- Your tasks -->
+      <div>
+        <h3>Your Tasks</h3>
+        <ul id="myTasks"></ul>
+        <input id="newTask" placeholder="New task">
+        <button onclick="addTask()">Add Task</button>
+      </div>
 
-    <h3>Brother's Tasks</h3>
-    <ul id="broTasks"></ul>
+      <!-- Brother's tasks -->
+      <div>
+        <h3>Brother's Tasks</h3>
+        <ul id="broTasks"></ul>
+      </div>
+    </div>
   </div>
 
+  <!-- Firebase Scripts -->
   <script type="module">
-    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Config
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyC2GJ2B6zpaw6RVlIcpSIWO1XeUiuDDKnM",
       authDomain: "selfimprovementda.firebaseapp.com",
@@ -41,86 +54,85 @@
       appId: "1:227863604727:web:30b6a7067957ca6f13d2f2"
     };
 
-    // Init
+    // Init Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     let currentUserEmail = "";
 
-    // Login function
+    // Login
     window.login = function() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          document.getElementById("loginStatus").innerText = "Login successful!";
+          document.getElementById("loginStatus").innerText = "";
         })
         .catch((error) => {
-          document.getElementById("loginStatus").innerText = "Error: " + error.message;
+          document.getElementById("loginStatus").innerText = error.message;
         });
-    }
+    };
 
-    // When logged in
+    // Logout
+    window.logout = function() {
+      signOut(auth);
+    };
+
+    // Auth state change
     onAuthStateChanged(auth, (user) => {
       if (user) {
         currentUserEmail = user.email;
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
-        document.getElementById("userEmail").innerText = currentUserEmail;
         loadTasks();
+      } else {
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("dashboard").style.display = "none";
       }
     });
 
-    // Load tasks in real time
-    function loadTasks() {
-      // My tasks
-      const myQuery = query(collection(db, "routines"), where("user", "==", currentUserEmail));
-      onSnapshot(myQuery, (snapshot) => {
-        renderTasks(snapshot.docs, "myTasks", true);
-      });
-
-      // Brother's tasks
-      const broQuery = query(collection(db, "routines"), where("user", "!=", currentUserEmail));
-      onSnapshot(broQuery, (snapshot) => {
-        renderTasks(snapshot.docs, "broTasks", false);
-      });
-    }
-
-    // Render tasks
-    function renderTasks(docs, elementId, editable) {
-      const list = document.getElementById(elementId);
-      list.innerHTML = "";
-      docs.forEach(docSnap => {
-        const task = docSnap.data();
-        const li = document.createElement("li");
-        li.textContent = task.title + (task.completed ? " ✅" : "");
-        if (editable) {
-          li.style.cursor = "pointer";
-          li.onclick = () => toggleComplete(docSnap.id, task.completed);
-        }
-        list.appendChild(li);
-      });
-    }
-
-    // Add new task
+    // Add task
     window.addTask = async function() {
-      const title = document.getElementById("newTask").value;
-      if (!title) return;
-      await addDoc(collection(db, "routines"), {
-        title,
+      const taskText = document.getElementById("newTask").value;
+      if (taskText.trim() === "") return;
+      await addDoc(collection(db, "tasks"), {
+        text: taskText,
         completed: false,
-        user: currentUserEmail
+        owner: currentUserEmail
       });
       document.getElementById("newTask").value = "";
+    };
+
+    // Load tasks
+    function loadTasks() {
+      const q = query(collection(db, "tasks"));
+      onSnapshot(q, (snapshot) => {
+        const myTasksList = document.getElementById("myTasks");
+        const broTasksList = document.getElementById("broTasks");
+        myTasksList.innerHTML = "";
+        broTasksList.innerHTML = "";
+
+        snapshot.forEach((docSnap) => {
+          const task = docSnap.data();
+          const li = document.createElement("li");
+          li.textContent = task.text;
+          if (task.completed) li.classList.add("completed");
+
+          if (task.owner === currentUserEmail) {
+            li.onclick = () => toggleTask(docSnap.id, task.completed);
+            myTasksList.appendChild(li);
+          } else {
+            broTasksList.appendChild(li);
+          }
+        });
+      });
     }
 
-    // Toggle complete
-    async function toggleComplete(id, currentStatus) {
-      await updateDoc(doc(db, "routines", id), {
-        completed: !currentStatus
-      });
+    // Toggle task complete
+    async function toggleTask(id, completed) {
+      const taskRef = doc(db, "tasks", id);
+      await updateDoc(taskRef, { completed: !completed });
     }
   </script>
 </body>
