@@ -115,6 +115,26 @@ li.completed {
   color: gray;
 }
 
+/* Buttons inside task items */
+.task-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: transform 0.2s;
+}
+
+.task-btn:hover {
+  transform: scale(1.2);
+}
+
+/* Completed tasks */
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   body {
