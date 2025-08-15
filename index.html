@@ -18,25 +18,26 @@
 
   <!-- ===== DASHBOARD ===== -->
   <div id="dashboard" style="display: none;">
-    <h1>Welcome</h1>
-    <button onclick="logout()">Logout</button>
+  <h1>Welcome</h1>
+  <button onclick="logout()">Logout</button>
 
-    <div class="task-container">
-      <!-- Your Tasks Card -->
-      <div class="task-card">
-        <h3>Your Tasks</h3>
-        <ul id="myTasks"></ul>
-        <input id="newTask" placeholder="New task">
-        <button onclick="addTask()">Add Task</button>
-      </div>
+  <div class="task-container">
+    <!-- Your Tasks -->
+    <div class="task-card">
+      <h3>Your Tasks</h3>
+      <ul id="myTasks"></ul>
+      <input id="newTask" placeholder="New task">
+      <button onclick="addTask()">Add Task</button>
+    </div>
 
-      <!-- Brother's Tasks Card -->
-      <div class="task-card">
-        <h3>Brother's Tasks</h3>
-        <ul id="broTasks"></ul>
-      </div>
+    <!-- Brother's Tasks -->
+    <div class="task-card">
+      <h3>Brother's Tasks</h3>
+      <ul id="broTasks"></ul>
     </div>
   </div>
+  </div>
+  
 
   <!-- ===== FIREBASE LOGIC ===== -->
   <script type="module">
