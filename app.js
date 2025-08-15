@@ -127,3 +127,23 @@ async function deleteTask(id) {
     await deleteDoc(doc(db, "tasks", id));
   }
 }
+
+const modeToggle = document.getElementById("modeToggle");
+
+// Load saved mode from localStorage
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark-mode");
+  modeToggle.textContent = "☀️ Light Mode";
+}
+
+modeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+
+  if (document.body.classList.contains("dark-mode")) {
+    localStorage.setItem("theme", "dark");
+    modeToggle.textContent = "☀️ Light Mode";
+  } else {
+    localStorage.setItem("theme", "light");
+    modeToggle.textContent = "🌙 Dark Mode";
+  }
+});
