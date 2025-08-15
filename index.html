@@ -7,7 +7,7 @@
 </head>
 <body>
 
-  <!-- Login Page -->
+  <!-- ===== LOGIN PAGE ===== -->
   <div id="loginPage">
     <h1>Login</h1>
     <input id="email" type="email" placeholder="Email">
@@ -16,33 +16,33 @@
     <p id="loginStatus"></p>
   </div>
 
-  <!-- Dashboard -->
+  <!-- ===== DASHBOARD ===== -->
   <div id="dashboard" style="display: none;">
     <h1>Welcome</h1>
     <button onclick="logout()">Logout</button>
 
     <div class="task-container">
-      <!-- Your tasks -->
-      <div>
+      <!-- Your Tasks Card -->
+      <div class="task-card">
         <h3>Your Tasks</h3>
         <ul id="myTasks"></ul>
         <input id="newTask" placeholder="New task">
         <button onclick="addTask()">Add Task</button>
       </div>
 
-      <!-- Brother's tasks -->
-      <div>
+      <!-- Brother's Tasks Card -->
+      <div class="task-card">
         <h3>Brother's Tasks</h3>
         <ul id="broTasks"></ul>
       </div>
     </div>
   </div>
 
-  <!-- Firebase Scripts -->
+  <!-- ===== FIREBASE LOGIC ===== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, onSnapshot, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
     // Firebase config
     const firebaseConfig = {
