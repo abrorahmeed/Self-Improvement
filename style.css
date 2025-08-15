@@ -174,3 +174,28 @@ li span {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background: #1a202c;
+  color: #f7fafc;
+}
+
+body.dark-mode #loginPage,
+body.dark-mode #dashboard {
+  background: #2d3748;
+  color: #f7fafc;
+}
+
+body.dark-mode input,
+body.dark-mode button {
+  background-color: #4a5568;
+  color: #f7fafc;
+  border: none;
+}
+
+body.dark-mode li {
+  background: #4a5568;
+}
+
