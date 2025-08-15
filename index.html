@@ -94,47 +94,82 @@
     });
 
     // Add task
-    window.addTask = async function() {
-      const taskText = document.getElementById("newTask").value;
-      if (taskText.trim() === "") return;
-      await addDoc(collection(db, "tasks"), {
-        text: taskText,
-        completed: false,
-        owner: currentUserEmail
-      });
-      document.getElementById("newTask").value = "";
-    };
+window.addTask = async function () {
+  const taskText = document.getElementById("newTask").value;
+  if (taskText.trim() === "") return;
+  await addDoc(collection(db, "tasks"), {
+    text: taskText,
+    completed: false,
+    owner: currentUserEmail,
+    createdAt: Date.now()
+  });
+  document.getElementById("newTask").value = "";
+};
 
-    // Load tasks
-    function loadTasks() {
-      const q = query(collection(db, "tasks"));
-      onSnapshot(q, (snapshot) => {
-        const myTasksList = document.getElementById("myTasks");
-        const broTasksList = document.getElementById("broTasks");
-        myTasksList.innerHTML = "";
-        broTasksList.innerHTML = "";
+// Load tasks
+function loadTasks() {
+  const q = query(collection(db, "tasks"));
+  onSnapshot(q, (snapshot) => {
+    const myTasksList = document.getElementById("myTasks");
+    const broTasksList = document.getElementById("broTasks");
+    myTasksList.innerHTML = "";
+    broTasksList.innerHTML = "";
 
-        snapshot.forEach((docSnap) => {
-          const task = docSnap.data();
-          const li = document.createElement("li");
-          li.textContent = task.text;
-          if (task.completed) li.classList.add("completed");
+    snapshot.forEach((docSnap) => {
+      const task = docSnap.data();
+      const li = document.createElement("li");
 
-          if (task.owner === currentUserEmail) {
-            li.onclick = () => toggleTask(docSnap.id, task.completed);
-            myTasksList.appendChild(li);
-          } else {
-            broTasksList.appendChild(li);
-          }
-        });
-      });
-    }
+      // Task text span
+      const span = document.createElement("span");
+      span.textContent = task.text;
+      if (task.completed) span.classList.add("completed");
+      span.onclick = () => toggleTask(docSnap.id, task.completed);
 
-    // Toggle task complete
-    async function toggleTask(id, completed) {
-      const taskRef = doc(db, "tasks", id);
-      await updateDoc(taskRef, { completed: !completed });
-    }
+      // Edit button
+      const editBtn = document.createElement("button");
+      editBtn.innerHTML = "✏️";
+      editBtn.classList.add("task-btn");
+      editBtn.onclick = () => editTask(docSnap.id, task.text);
+
+      // Delete button
+      const delBtn = document.createElement("button");
+      delBtn.innerHTML = "🗑️";
+      delBtn.classList.add("task-btn");
+      delBtn.onclick = () => deleteTask(docSnap.id);
+
+      li.appendChild(span);
+      if (task.owner === currentUserEmail) {
+        li.appendChild(editBtn);
+        li.appendChild(delBtn);
+        myTasksList.appendChild(li);
+      } else {
+        broTasksList.appendChild(li);
+      }
+    });
+  });
+}
+
+// Toggle task completion
+async function toggleTask(id, completed) {
+  const taskRef = doc(db, "tasks", id);
+  await updateDoc(taskRef, { completed: !completed });
+}
+
+// Edit task
+async function editTask(id, currentText) {
+  const newText = prompt("Edit your task:", currentText);
+  if (newText && newText.trim() !== "") {
+    const taskRef = doc(db, "tasks", id);
+    await updateDoc(taskRef, { text: newText });
+  }
+}
+
+// Delete task
+async function deleteTask(id) {
+  if (confirm("Delete this task?")) {
+    await deleteDoc(doc(db, "tasks", id));
+  }
+      }
   </script>
 </body>
 </html>
