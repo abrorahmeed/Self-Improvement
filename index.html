@@ -4,18 +4,33 @@
   <title>Self Improvement Tracker</title>
 </head>
 <body>
-  <h1>Login</h1>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <p id="loginStatus"></p>
+  <div id="loginPage">
+    <h1>Login</h1>
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginStatus"></p>
+  </div>
+
+  <div id="dashboard" style="display:none;">
+    <h2>Welcome, <span id="userEmail"></span></h2>
+
+    <h3>Your Tasks</h3>
+    <ul id="myTasks"></ul>
+    <input id="newTask" placeholder="New task">
+    <button onclick="addTask()">Add Task</button>
+
+    <h3>Brother's Tasks</h3>
+    <ul id="broTasks"></ul>
+  </div>
 
   <script type="module">
-    // Import Firebase
+    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Your Firebase Config
+    // Config
     const firebaseConfig = {
       apiKey: "AIzaSyC2GJ2B6zpaw6RVlIcpSIWO1XeUiuDDKnM",
       authDomain: "selfimprovementda.firebaseapp.com",
@@ -25,23 +40,86 @@
       appId: "1:227863604727:web:30b6a7067957ca6f13d2f2"
     };
 
-    // Init Firebase
+    // Init
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Login Function
+    let currentUserEmail = "";
+
+    // Login function
     window.login = function() {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
       signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
+        .then(() => {
           document.getElementById("loginStatus").innerText = "Login successful!";
-          console.log("User:", userCredential.user);
         })
         .catch((error) => {
           document.getElementById("loginStatus").innerText = "Error: " + error.message;
         });
+    }
+
+    // When logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUserEmail = user.email;
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("userEmail").innerText = currentUserEmail;
+        loadTasks();
+      }
+    });
+
+    // Load tasks in real time
+    function loadTasks() {
+      // My tasks
+      const myQuery = query(collection(db, "routines"), where("user", "==", currentUserEmail));
+      onSnapshot(myQuery, (snapshot) => {
+        renderTasks(snapshot.docs, "myTasks", true);
+      });
+
+      // Brother's tasks
+      const broQuery = query(collection(db, "routines"), where("user", "!=", currentUserEmail));
+      onSnapshot(broQuery, (snapshot) => {
+        renderTasks(snapshot.docs, "broTasks", false);
+      });
+    }
+
+    // Render tasks
+    function renderTasks(docs, elementId, editable) {
+      const list = document.getElementById(elementId);
+      list.innerHTML = "";
+      docs.forEach(docSnap => {
+        const task = docSnap.data();
+        const li = document.createElement("li");
+        li.textContent = task.title + (task.completed ? " ✅" : "");
+        if (editable) {
+          li.style.cursor = "pointer";
+          li.onclick = () => toggleComplete(docSnap.id, task.completed);
+        }
+        list.appendChild(li);
+      });
+    }
+
+    // Add new task
+    window.addTask = async function() {
+      const title = document.getElementById("newTask").value;
+      if (!title) return;
+      await addDoc(collection(db, "routines"), {
+        title,
+        completed: false,
+        user: currentUserEmail
+      });
+      document.getElementById("newTask").value = "";
+    }
+
+    // Toggle complete
+    async function toggleComplete(id, currentStatus) {
+      await updateDoc(doc(db, "routines", id), {
+        completed: !currentStatus
+      });
     }
   </script>
 </body>
