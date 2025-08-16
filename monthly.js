@@ -46,7 +46,8 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserEmail = user.email;
     document.getElementById("monthlyPage").style.display = "block";
-    document.getElementById("monthlyMonthTitle").innerText = `Monthly Challenge: ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
+    document.getElementById("monthlyMonthTitle").innerText =
+      `Monthly Challenge: ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
     await loadMonthlyGoals();
   } else {
     window.location.href = "index.html";
@@ -90,20 +91,59 @@ function displayGoals(goalDocs) {
   goalDocs.forEach((docSnap) => {
     const goal = docSnap.data();
 
-    // Container
+    // Container card
     const goalDiv = document.createElement("div");
     goalDiv.classList.add("monthly-goal-card");
 
+    // Inner wrapper for text + button alignment
     const contentWrapper = document.createElement("div");
     contentWrapper.style.display = "flex";
     contentWrapper.style.justifyContent = "space-between";
     contentWrapper.style.alignItems = "center";
     contentWrapper.style.width = "100%";
 
+    // Goal text
     const goalText = document.createElement("p");
     goalText.textContent = goal.text;
     contentWrapper.appendChild(goalText);
 
+    // Button
     const completedBtn = document.createElement("button");
     completedBtn.textContent = goal.completedBy ? "Completed ✅" : "Mark Completed";
-    completedBtn.disabled = !!goal
+    completedBtn.disabled = !!goal.completedBy;
+    completedBtn.onclick = async () => {
+      if (confirm("Are you sure you want to mark this goal as completed? This cannot be undone.")) {
+        await updateDoc(doc(db, "monthlyGoals", docSnap.id), { completedBy: currentUserEmail });
+        loadMonthlyGoals(); // refresh display
+      }
+    };
+    contentWrapper.appendChild(completedBtn);
+
+    // Append wrapper to goal card
+    goalDiv.appendChild(contentWrapper);
+    container.appendChild(goalDiv);
+
+    // Count completed
+    if (goal.completedBy === currentUserEmail) myCompleted++;
+    if (goal.completedBy && goal.completedBy !== currentUserEmail) broCompleted++;
+  });
+
+  // Update progress bars
+  const myPercent = Math.round((myCompleted / GOALS_PER_MONTH) * 100);
+  const broPercent = Math.round((broCompleted / GOALS_PER_MONTH) * 100);
+
+  document.getElementById("myProgress").style.width = `${myPercent}%`;
+  document.getElementById("broProgress").style.width = `${broPercent}%`;
+
+  // Leaderboard
+  const leaderboard = document.getElementById("leaderboard");
+  leaderboard.innerHTML = "";
+  const completedGoals = goalDocs.filter(g => g.data().completedBy);
+  completedGoals.sort((a, b) => a.data().createdAt - b.data().createdAt);
+
+  completedGoals.forEach((g, index) => {
+    const item = document.createElement("p");
+    item.textContent = `${index + 1}. ${g.data().completedBy} → ${g.data().text}`;
+    leaderboard.appendChild(item);
+  });
+}
