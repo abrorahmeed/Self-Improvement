@@ -1,61 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Monthly Goals</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Minimal additions for this page only */
-    .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; gap:8px; }
-    .pill { font-size:14px; opacity:0.9; }
-    .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-    .progress { width:100%; height:10px; background:#2a3242; border-radius:999px; overflow:hidden; }
-    .progress .bar { height:100%; width:0%; background:linear-gradient(90deg,#60a5fa,#22d3ee); transition:width .25s ease; }
-    .muted { color:#cbd5e1; font-size:14px; }
-    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#1f2937; color:#e5e7eb; font-size:12px; }
-    .leader-row { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-radius:10px; background:#2d3748; margin-bottom:8px; }
-    .leader-row.win { background:#1f2937; border:1px solid #60a5fa; }
-    .actions button { width:auto; padding:8px 10px; }
-    .actions .mini { padding:6px 8px; font-size:14px; }
-    .spacer { height:10px; }
-    /* Make sure headings are readable in dark */
-    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 { color:#e2e8f0; }
-  </style>
+  <title>Monthly Challenge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="monthly.css">
 </head>
 <body class="dark-mode">
-  <div id="dashboard">
-    <div class="topbar">
-      <h1 id="monthTitle">Monthly Challenge</h1>
-      <div class="row">
-        <span id="statusPill" class="badge pill">Loading…</span>
-        <button id="logoutBtn" onclick="logout()">Logout</button>
-      </div>
+
+  <!-- ===== HEADER ===== -->
+  <div id="header" style="display:flex; justify-content:space-between; align-items:center; margin:20px;">
+    <div>
+      <h1>Monthly Challenge: August 2025</h1>
+      <p>Open until August 31, 2025</p>
     </div>
+    <button onclick="logout()">Logout</button>
+  </div>
 
-    <div class="task-container">
-      <!-- Challenge tasks -->
-      <div class="task-card">
-        <h3>Challenge Tasks</h3>
-        <p class="muted" id="deadlineText">—</p>
-        <ul id="tasksList"></ul>
-      </div>
+  <!-- ===== GOALS LIST ===== -->
+  <div id="goalsContainer" style="max-width:800px; margin:auto; display:flex; flex-direction:column; gap:15px;">
+    <!-- Dynamic goal cards will be appended here -->
+  </div>
 
-      <!-- Your progress + leaderboard -->
-      <div class="task-card">
-        <h3>Your Progress</h3>
-        <div id="yourProgress"></div>
-        <div class="spacer"></div>
-        <h3>Leaderboard</h3>
-        <div id="leaderboard"></div>
-      </div>
+  <!-- ===== OVERALL PROGRESS ===== -->
+  <div id="progressContainer" style="max-width:800px; margin:40px auto; display:flex; flex-direction:column; gap:15px;">
+    <h3>Overall Progress</h3>
+    <div>
+      <p>Your Progress:</p>
+      <div class="progress-bar"><div id="myProgress" class="progress-fill"></div></div>
     </div>
-
-    <div style="text-align:center; margin-top:20px;">
-      <a href="index.html"><button>← Back to Tasks</button></a>
+    <div>
+      <p>Brother's Progress:</p>
+      <div class="progress-bar"><div id="broProgress" class="progress-fill"></div></div>
     </div>
   </div>
 
+  <!-- ===== LEADERBOARD ===== -->
+  <div id="leaderboardContainer" style="max-width:800px; margin:auto; margin-bottom:40px;">
+    <h3>Leaderboard</h3>
+    <ul id="leaderboard" style="list-style:none; padding-left:0;"></ul>
+  </div>
+
+  <!-- ===== FIREBASE LOGIC ===== -->
   <script type="module" src="monthly.js"></script>
 </body>
 </html>
