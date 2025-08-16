@@ -30,42 +30,38 @@ const monthlyGoalList = [
   "Learn 10 new words daily",
   "Do 30 min workout daily"
 ];
-const GOALS_PER_MONTH = 5; // number of random goals per month
+const GOALS_PER_MONTH = 5;
 
+// Helpers
 function getCurrentMonthKey() {
   const today = new Date();
-  return `${today.getFullYear()}-${today.getMonth() + 1}`; // e.g., "2025-8"
+  return `${today.getFullYear()}-${today.getMonth() + 1}`;
 }
 
-// Logout function
-window.logout = function() {
-  signOut(auth);
-};
+// Logout
+window.logout = () => signOut(auth);
 
-// Auth state
+// Auth check
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserEmail = user.email;
-    // Show monthly page
     document.getElementById("monthlyPage").style.display = "block";
     document.getElementById("monthlyMonthTitle").innerText = `Monthly Challenge: ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
     await loadMonthlyGoals();
   } else {
-    window.location.href = "index.html"; // redirect if not logged in
+    window.location.href = "index.html";
   }
 });
 
-// Load or generate monthly goals
+// Load or generate goals
 async function loadMonthlyGoals() {
   const monthKey = getCurrentMonthKey();
   const monthlyRef = collection(db, "monthlyGoals");
 
-  // Check if goals exist for this month
   const q = query(monthlyRef, where("monthKey", "==", monthKey));
   const snapshot = await getDocs(q);
 
   if (snapshot.empty) {
-    // Generate new goals
     const shuffled = monthlyGoalList.sort(() => 0.5 - Math.random());
     const goalsToAdd = shuffled.slice(0, GOALS_PER_MONTH);
 
@@ -77,66 +73,37 @@ async function loadMonthlyGoals() {
         createdAt: Date.now()
       });
     }
-    // Reload after creating
     return loadMonthlyGoals();
   }
 
-  // Display goals
   displayGoals(snapshot.docs);
 }
 
-// Display goals in DOM
+// Display goals
 function displayGoals(goalDocs) {
   const container = document.getElementById("monthlyGoalsContainer");
-  container.innerHTML = ""; // clear previous
+  container.innerHTML = "";
 
   let myCompleted = 0;
   let broCompleted = 0;
 
   goalDocs.forEach((docSnap) => {
     const goal = docSnap.data();
+
+    // Container
     const goalDiv = document.createElement("div");
     goalDiv.classList.add("monthly-goal-card");
 
+    const contentWrapper = document.createElement("div");
+    contentWrapper.style.display = "flex";
+    contentWrapper.style.justifyContent = "space-between";
+    contentWrapper.style.alignItems = "center";
+    contentWrapper.style.width = "100%";
+
     const goalText = document.createElement("p");
     goalText.textContent = goal.text;
-    goalDiv.appendChild(goalText);
+    contentWrapper.appendChild(goalText);
 
     const completedBtn = document.createElement("button");
     completedBtn.textContent = goal.completedBy ? "Completed ✅" : "Mark Completed";
-    completedBtn.disabled = !!goal.completedBy;
-
-    completedBtn.onclick = async () => {
-      if (confirm("Are you sure you want to mark this goal as completed? This cannot be undone.")) {
-        await updateDoc(doc(db, "monthlyGoals", docSnap.id), { completedBy: currentUserEmail });
-        loadMonthlyGoals(); // refresh display
-      }
-    };
-
-    goalDiv.appendChild(completedBtn);
-    container.appendChild(goalDiv);
-
-    // Count completed
-    if (goal.completedBy === currentUserEmail) myCompleted++;
-    if (goal.completedBy && goal.completedBy !== currentUserEmail) broCompleted++;
-  });
-
-  // Update progress bars (visual fill)
-  const myPercent = Math.round((myCompleted / GOALS_PER_MONTH) * 100);
-  const broPercent = Math.round((broCompleted / GOALS_PER_MONTH) * 100);
-
-  document.getElementById("myProgress").style.width = `${myPercent}%`;
-  document.getElementById("broProgress").style.width = `${broPercent}%`;
-
-  // Leaderboard
-  const leaderboard = document.getElementById("leaderboard");
-  leaderboard.innerHTML = "";
-  const completedGoals = goalDocs.filter(g => g.data().completedBy);
-  completedGoals.sort((a, b) => a.data().createdAt - b.data().createdAt);
-
-  completedGoals.forEach((g, index) => {
-    const item = document.createElement("p");
-    item.textContent = `${index + 1}. ${g.data().completedBy} → ${g.data().text}`;
-    leaderboard.appendChild(item);
-  });
-}
+    completedBtn.disabled = !!goal
