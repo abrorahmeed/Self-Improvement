@@ -1,70 +1,26 @@
-/* ===== GOAL CARDS ===== */
-.goal-card {
-  background: #2d3748;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.goal-card p {
-  font-size: 16px;
-  color: #f7fafc;
-}
-
-/* Completed button */
-.goal-card button {
-  width: 150px;
-  align-self: flex-start;
-  background-color: #4a90e2;
-  color:white;
-  border:none;
-  border-radius:8px;
-  padding:8px 12px;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.goal-card button:hover {
-  background-color: #357abd;
-}
-
-/* ===== PROGRESS BAR ===== */
-.progress-bar {
-  width: 100%;
-  height: 20px;
-  background: #4a5568;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(to right, #4a90e2, #357abd);
-  border-radius: 12px;
-  transition: width 0.5s ease-in-out;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .goal-card button {
-    width: 100%;
-  }
-
-  .monthly-goal-card {
-  background-color: #1e1e2f; /* dark card */
+/* ===== DASHBOARD CONTAINER ===== */
+.dashboard-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: #12122b;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
   color: #fff;
-  padding: 15px 20px;
-  margin: 10px 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== GOAL CARDS ===== */
+.monthly-goal-card {
+  background-color: #1e1e2f;
+  padding: 18px 22px;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: transform 0.2s, box-shadow 0.2s;
+  margin: 10px 0;
 }
 
 .monthly-goal-card:hover {
@@ -77,6 +33,7 @@
   font-size: 1.1em;
 }
 
+/* Completed button */
 .monthly-goal-card button {
   background-color: #4caf50;
   color: #fff;
@@ -95,4 +52,58 @@
   background-color: #888;
   cursor: default;
 }
+
+/* ===== PROGRESS BARS ===== */
+.progress-bar {
+  width: 100%;
+  height: 25px;
+  background-color: #2a2a4b;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, #4caf50, #81c784);
+  border-radius: 12px 0 0 12px;
+  transition: width 0.4s ease-in-out;
+}
+
+/* ===== LEADERBOARD ===== */
+#leaderboardContainer {
+  background-color: #1c1c38;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+#leaderboardContainer h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+#leaderboardContainer p {
+  margin: 6px 0;
+  padding: 8px 12px;
+  background-color: #2a2a4b;
+  border-radius: 8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .monthly-goal-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .monthly-goal-card button {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .dashboard-container {
+    padding: 15px;
+  }
 }
