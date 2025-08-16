@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -46,11 +46,12 @@ window.logout = function() {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserEmail = user.email;
+    // Show monthly page
     document.getElementById("monthlyPage").style.display = "block";
     document.getElementById("monthlyMonthTitle").innerText = `Monthly Challenge: ${new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}`;
     await loadMonthlyGoals();
   } else {
-    window.location.href = "index.html"; // redirect to main page if not logged in
+    window.location.href = "index.html"; // redirect if not logged in
   }
 });
 
@@ -59,7 +60,7 @@ async function loadMonthlyGoals() {
   const monthKey = getCurrentMonthKey();
   const monthlyRef = collection(db, "monthlyGoals");
 
-  // Check if goals already exist for this month
+  // Check if goals exist for this month
   const q = query(monthlyRef, where("monthKey", "==", monthKey));
   const snapshot = await getDocs(q);
 
@@ -72,7 +73,7 @@ async function loadMonthlyGoals() {
       await addDoc(monthlyRef, {
         text: goalText,
         monthKey: monthKey,
-        completedBy: "",  // empty until someone completes
+        completedBy: "",
         createdAt: Date.now()
       });
     }
@@ -120,23 +121,22 @@ function displayGoals(goalDocs) {
     if (goal.completedBy && goal.completedBy !== currentUserEmail) broCompleted++;
   });
 
-  // Update progress bars
+  // Update progress bars (visual fill)
   const myPercent = Math.round((myCompleted / GOALS_PER_MONTH) * 100);
   const broPercent = Math.round((broCompleted / GOALS_PER_MONTH) * 100);
 
-  document.getElementById("myProgress").innerText = `My Completion: ${myPercent}%`;
-  document.getElementById("broProgress").innerText = `Brother's Completion: ${broPercent}%`;
+  document.getElementById("myProgress").style.width = `${myPercent}%`;
+  document.getElementById("broProgress").style.width = `${broPercent}%`;
 
   // Leaderboard
   const leaderboard = document.getElementById("leaderboard");
   leaderboard.innerHTML = "";
-  // Sort by completion time
   const completedGoals = goalDocs.filter(g => g.data().completedBy);
   completedGoals.sort((a, b) => a.data().createdAt - b.data().createdAt);
 
   completedGoals.forEach((g, index) => {
     const item = document.createElement("p");
-    item.textContent = `${index + 1}. ${g.data().completedBy} -> ${g.data().text}`;
+    item.textContent = `${index + 1}. ${g.data().completedBy} → ${g.data().text}`;
     leaderboard.appendChild(item);
   });
 }
