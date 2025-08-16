@@ -10,19 +10,20 @@
 
   <!-- ===== HEADER ===== -->
   <div id="header" style="display:flex; justify-content:space-between; align-items:center; margin:20px;">
-  <div>
-    <h1>Monthly Challenge: August 2025</h1>
-    <p>Open until August 31, 2025</p>
+    <div>
+      <h1>Monthly Challenge: August 2025</h1>
+      <p>Open until August 31, 2025</p>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button onclick="window.location.href='index.html'">Back</button>
+      <button onclick="logout()">Logout</button>
+    </div>
   </div>
-  <div style="display:flex; gap:10px;">
-    <button onclick="window.location.href='index.html'">⬅ Back</button>
-    <button onclick="logout()">Logout</button>
-  </div>
-  </div>
+  
 
   <!-- ===== GOALS LIST ===== -->
-  <div id="goalsContainer" style="max-width:800px; margin:auto; display:flex; flex-direction:column; gap:15px;">
-    <!-- Dynamic goal cards will be appended here -->
+  <div id="monthlyGoalsContainer">
+  <!-- JS will populate this with random monthly goals -->
   </div>
 
   <!-- ===== OVERALL PROGRESS ===== -->
