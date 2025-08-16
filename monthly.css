@@ -53,4 +53,46 @@
   .goal-card button {
     width: 100%;
   }
+
+  .monthly-goal-card {
+  background-color: #1e1e2f; /* dark card */
+  color: #fff;
+  padding: 15px 20px;
+  margin: 10px 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.monthly-goal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.monthly-goal-card p {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.monthly-goal-card button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.monthly-goal-card button:hover {
+  background-color: #45a049;
+}
+
+.monthly-goal-card button:disabled {
+  background-color: #888;
+  cursor: default;
+}
 }
