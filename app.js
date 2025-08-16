@@ -51,13 +51,11 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // ==== Add task ====
-// (keeps 'completed: false' for backward compatibility; it's no longer used)
 window.addTask = async function () {
   const taskText = document.getElementById("newTask").value;
   if (taskText.trim() === "") return;
   await addDoc(collection(db, "tasks"), {
     text: taskText,
-    completed: false, // legacy field, not used by UI anymore
     owner: currentUserEmail,
     createdAt: Date.now()
   });
@@ -77,11 +75,9 @@ function loadTasks() {
       const task = docSnap.data();
       const li = document.createElement("li");
 
-      // Task text
+      // Task text (click = instantly delete)
       const span = document.createElement("span");
       span.textContent = task.text;
-
-      // NEW: clicking a task asks to confirm and then deletes it
       span.onclick = () => markDoneAndDelete(docSnap.id);
 
       // Edit button
@@ -109,11 +105,9 @@ function loadTasks() {
   });
 }
 
-// ==== NEW: Mark done -> delete ====
+// ==== Mark done -> delete instantly ====
 async function markDoneAndDelete(id) {
-  if (confirm("Mark this task as done? It will be deleted.")) {
-    await deleteDoc(doc(db, "tasks", id));
-  }
+  await deleteDoc(doc(db, "tasks", id));
 }
 
 // ==== Edit task ====
@@ -125,8 +119,11 @@ async function editTask(id, currentText) {
   }
 }
 
-async function markDoneAndDelete(id) {
-  await deleteDoc(doc(db, "tasks", id));
+// ==== Delete task ====
+async function deleteTask(id) {
+  if (confirm("Delete this task?")) {
+    await deleteDoc(doc(db, "tasks", id));
+  }
 }
 
 // ==== Dark mode toggle ====
