@@ -11,7 +11,7 @@
   <!-- ===== HEADER ===== -->
   <div id="header" style="display:flex; justify-content:space-between; align-items:center; margin:20px;">
     <div>
-      <h1>Monthly Challenge: August 2025</h1>
+      <h1 id="monthlyMonthTitle">Monthly Challenge: August 2025</h1>
       <p>Open until August 31, 2025</p>
     </div>
     <div style="display:flex; gap:10px;">
@@ -19,30 +19,35 @@
       <button onclick="logout()">Logout</button>
     </div>
   </div>
-  
 
-  <!-- ===== GOALS LIST ===== -->
-  <div id="monthlyGoalsContainer">
-  <!-- JS will populate this with random monthly goals -->
-  </div>
-
-  <!-- ===== OVERALL PROGRESS ===== -->
-  <div id="progressContainer" style="max-width:800px; margin:40px auto; display:flex; flex-direction:column; gap:15px;">
-    <h3>Overall Progress</h3>
-    <div>
-      <p>Your Progress:</p>
-      <div class="progress-bar"><div id="myProgress" class="progress-fill"></div></div>
+  <!-- ===== MONTHLY GOALS SECTION ===== -->
+  <div id="monthlyPage" style="display:none;">
+    <div id="monthlyGoalsContainer">
+      <!-- JS will populate this with random monthly goals -->
     </div>
-    <div>
-      <p>Brother's Progress:</p>
-      <div class="progress-bar"><div id="broProgress" class="progress-fill"></div></div>
-    </div>
-  </div>
 
-  <!-- ===== LEADERBOARD ===== -->
-  <div id="leaderboardContainer" style="max-width:800px; margin:auto; margin-bottom:40px;">
-    <h3>Leaderboard</h3>
-    <ul id="leaderboard" style="list-style:none; padding-left:0;"></ul>
+    <!-- ===== OVERALL PROGRESS ===== -->
+    <div id="progressContainer" style="max-width:800px; margin:40px auto; display:flex; flex-direction:column; gap:15px;">
+      <h3>Overall Progress</h3>
+      <div>
+        <p>Your Progress:</p>
+        <div class="progress-bar">
+          <div id="myProgress" class="progress-fill" style="width:0%;"></div>
+        </div>
+      </div>
+      <div>
+        <p>Brother's Progress:</p>
+        <div class="progress-bar">
+          <div id="broProgress" class="progress-fill" style="width:0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LEADERBOARD ===== -->
+    <div id="leaderboardContainer" style="max-width:800px; margin:auto; margin-bottom:40px;">
+      <h3>Leaderboard</h3>
+      <ul id="leaderboard" style="list-style:none; padding-left:0;"></ul>
+    </div>
   </div>
 
   <!-- ===== FIREBASE LOGIC ===== -->
