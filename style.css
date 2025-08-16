@@ -224,3 +224,30 @@ body.dark-mode .task-btn {
   background: #4a5568;
   color: #edf2f7;
 }
+
+/* ===== MONTHLY GOALS BUTTON ===== */
+.monthly-btn {
+  background: linear-gradient(135deg, #222, #444);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.monthly-btn:hover {
+  background: linear-gradient(135deg, #333, #555);
+  transform: scale(1.05);
+}
+
+/* Dark mode support for monthly button */
+body.dark-mode .monthly-btn {
+  background: linear-gradient(135deg, #111, #333);
+  color: #f7fafc;
+}
+
+body.dark-mode .monthly-btn:hover {
+  background: linear-gradient(135deg, #222, #444);
+}
