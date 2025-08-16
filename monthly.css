@@ -1,11 +1,8 @@
-/* ===== DASHBOARD CONTAINER ===== */
-.dashboard-container {
+/* ===== DASHBOARD CONTAINER STYLING ===== */
+#monthlyPage {
   max-width: 900px;
   margin: 30px auto;
-  padding: 25px;
-  background-color: #12122b;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  padding: 20px;
   color: #fff;
   font-family: 'Segoe UI', sans-serif;
 }
@@ -13,6 +10,7 @@
 /* ===== GOAL CARDS ===== */
 .monthly-goal-card {
   background-color: #1e1e2f;
+  color: #fff;
   padding: 18px 22px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -103,7 +101,7 @@
     margin-top: 10px;
   }
 
-  .dashboard-container {
+  #monthlyPage {
     padding: 15px;
   }
 }
