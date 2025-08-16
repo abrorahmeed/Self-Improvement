@@ -125,11 +125,8 @@ async function editTask(id, currentText) {
   }
 }
 
-// ==== Delete task ====
-async function deleteTask(id) {
-  if (confirm("Delete this task?")) {
-    await deleteDoc(doc(db, "tasks", id));
-  }
+async function markDoneAndDelete(id) {
+  await deleteDoc(doc(db, "tasks", id));
 }
 
 // ==== Dark mode toggle ====
