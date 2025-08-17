@@ -32,24 +32,89 @@
     </div>
   </div>
 
-  <!-- ===== FIREBASE AUTH CHECK ===== -->
-  <!-- 1️⃣ Load app.js first -->
+  <!-- ===== Firebase & App JS ===== -->
   <script type="module" src="app.js"></script>
 
-<!-- 2️⃣ Then run auth + loadTasks logic -->
+  <!-- ===== Auth + Tasks Logic ===== -->
   <script type="module">
-  import { auth, loadTasks } from './app.js';
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { auth, db } from './app.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { collection, query, onSnapshot, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  onAuthStateChanged(auth, (user) => {
-    const dailyPage = document.getElementById('dailyPage');
-    if (user) {
-      dailyPage.style.display = 'block';
-      if (typeof loadTasks === "function") loadTasks();
-    } else {
-      window.location.href = 'index.html';
+    let currentUserUID = "";
+    let currentUserEmail = "";
+
+    function loadTasks() {
+      const myTasksList = document.getElementById("myTasks");
+      const broTasksList = document.getElementById("broTasks");
+      if (!myTasksList || !broTasksList) return;
+
+      const q = query(collection(db, "tasks"));
+      onSnapshot(q, (snapshot) => {
+        myTasksList.innerHTML = "";
+        broTasksList.innerHTML = "";
+
+        snapshot.forEach((docSnap) => {
+          const task = docSnap.data();
+          const li = document.createElement("li");
+          const span = document.createElement("span");
+          span.textContent = task.text;
+          span.onclick = () => markDoneAndDelete(docSnap.id);
+
+          if (task.owner === currentUserUID) {
+            const editBtn = document.createElement("button");
+            editBtn.innerHTML = "✏️";
+            editBtn.classList.add("task-btn");
+            editBtn.onclick = () => editTask(docSnap.id, task.text);
+
+            const delBtn = document.createElement("button");
+            delBtn.innerHTML = "🗑️";
+            delBtn.classList.add("task-btn");
+            delBtn.onclick = () => deleteTask(docSnap.id);
+
+            li.appendChild(span);
+            li.appendChild(editBtn);
+            li.appendChild(delBtn);
+            myTasksList.appendChild(li);
+          } else {
+            li.appendChild(span);
+            broTasksList.appendChild(li);
+          }
+        });
+      });
     }
-  });
+
+    async function markDoneAndDelete(id) {
+      await deleteDoc(doc(db, "tasks", id));
+    }
+
+    async function editTask(id, currentText) {
+      const newText = prompt("Edit your task:", currentText);
+      if (newText && newText.trim() !== "") {
+        const taskRef = doc(db, "tasks", id);
+        await updateDoc(taskRef, { text: newText.trim() });
+      }
+    }
+
+    async function deleteTask(id) {
+      if (confirm("Delete this task?")) {
+        await deleteDoc(doc(db, "tasks", id));
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      const dailyPage = document.getElementById('dailyPage');
+      if (user) {
+        currentUserUID = user.uid;
+        currentUserEmail = user.email;
+
+        dailyPage.style.display = 'block';
+        loadTasks(); // ✅ runs after UID is set
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
   </script>
+
 </body>
 </html>
