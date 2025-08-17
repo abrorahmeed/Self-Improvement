@@ -1,1 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Self Improvement Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode">
 
+  <!-- ===== DASHBOARD ===== -->
+  <div id="dashboard" style="display: none;">
+    <h1>Daily Tasks</h1>
+
+    <div class="task-container">
+      <!-- Your Tasks -->
+      <div class="task-card">
+        <h3>Your Tasks</h3>
+        <ul id="myTasks"></ul>
+        <input id="newTask" placeholder="New task">
+        <button onclick="addTask()">Add Task</button>
+      </div>
+
+      <!-- Brother's Tasks -->
+      <div class="task-card">
+        <h3>Brother's Tasks</h3>
+        <ul id="broTasks"></ul>
+      </div>
+    </div>
+
+  <!-- ===== FIREBASE LOGIC ===== -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
