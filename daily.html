@@ -31,8 +31,22 @@
       <button onclick="window.location.href='index.html'">⬅️ Back to Menu</button>
     </div>
   </div>
+  
 
   <!-- ===== FIREBASE LOGIC ===== -->
+  <script type="module">
+import { auth } from './app.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  const dailyPage = document.getElementById('dailyPage');
+  if (user) {
+    dailyPage.style.display = 'block';
+  } else {
+    window.location.href = 'index.html';
+  }
+});
+  </script>
   <script type="module" src="app.js"></script>
 </body>
 </html>
