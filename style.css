@@ -200,6 +200,16 @@ body.dark-mode h3 {
   color: #e2e8f0; /* light gray-blue for readability */
 }
 
+/* Force dark background for task cards in dark mode */
+body.dark-mode .task-card {
+  background: #1e293b; /* deep slate gray */
+  color: #f7fafc;
+}
+
+body.dark-mode .task-card h3 {
+  color: #f7fafc; /* pure white for headings */
+}
+
 body.dark-mode input {
   background-color: #2d3748;
   color: #f7fafc;
