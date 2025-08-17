@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Self Improvement Tracker</title>
+  <title>Daily Plan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-mode">
 
-  <!-- ===== DASHBOARD ===== -->
-  <div id="dashboard" style="display: none;">
+  <!-- ===== DAILY DASHBOARD ===== -->
+  <div id="dailyPage" style="display:none;">
     <h1>Daily Tasks</h1>
 
     <div class="task-container">
@@ -26,6 +26,11 @@
         <ul id="broTasks"></ul>
       </div>
     </div>
+
+    <div style="text-align:center; margin-top:20px;">
+      <button onclick="window.location.href='index.html'">⬅️ Back to Menu</button>
+    </div>
+  </div>
 
   <!-- ===== FIREBASE LOGIC ===== -->
   <script type="module" src="app.js"></script>
