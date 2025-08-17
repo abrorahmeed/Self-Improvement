@@ -18,6 +18,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUserEmail = "";
+let currentUserUID = "";
 
 // ==== Login (only if login elements exist) ====
 window.login = function () {
@@ -38,7 +39,10 @@ window.login = function () {
 
 // ==== Logout (global) ====
 window.logout = function () {
-  signOut(auth);
+  signOut(auth).then(() => {
+    localStorage.removeItem("userUID");
+    localStorage.removeItem("userEmail");
+  });
 };
 
 // ==== Auth state change ====
@@ -48,6 +52,11 @@ onAuthStateChanged(auth, (user) => {
 
   if (user) {
     currentUserEmail = user.email;
+    currentUserUID = user.uid;
+
+    // ✅ Save user in localStorage for other pages
+    localStorage.setItem("userUID", currentUserUID);
+    localStorage.setItem("userEmail", currentUserEmail);
 
     if (loginPage) loginPage.style.display = "none";
     if (dashboard) dashboard.style.display = "block";
@@ -69,11 +78,15 @@ window.addTask = async function () {
 
   const taskText = newTaskInput.value;
   if (taskText.trim() === "") return;
+
+  // ✅ Use UID as owner
   await addDoc(collection(db, "tasks"), {
     text: taskText,
-    owner: currentUserEmail,
+    owner: currentUserUID,
+    email: currentUserEmail,
     createdAt: Date.now()
   });
+
   newTaskInput.value = "";
 };
 
@@ -98,8 +111,8 @@ function loadTasks() {
       span.textContent = task.text;
       span.onclick = () => markDoneAndDelete(docSnap.id);
 
-      // Edit button
-      if (task.owner === currentUserEmail) {
+      // If it's mine → allow edit/delete
+      if (task.owner === currentUserUID) {
         const editBtn = document.createElement("button");
         editBtn.innerHTML = "✏️";
         editBtn.classList.add("task-btn");
