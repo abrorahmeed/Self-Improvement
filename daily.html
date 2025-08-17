@@ -37,17 +37,19 @@
   
   <script type="module" src="app.js"></script>
   <script type="module">
-    import { auth } from './app.js';
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { auth } from './app.js';
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    onAuthStateChanged(auth, (user) => {
-      const dailyPage = document.getElementById('dailyPage');
+onAuthStateChanged(auth, (user) => {
+  const dailyPage = document.getElementById('dailyPage');
   if (user) {
     dailyPage.style.display = 'block';
+    // Load tasks if function exists
+    if (typeof loadTasks === "function") loadTasks();
   } else {
     window.location.href = 'index.html';
   }
 });
-    </script>
+  </script>
 </body>
 </html>
