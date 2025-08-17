@@ -19,10 +19,14 @@ const db = getFirestore(app);
 
 let currentUserEmail = "";
 
-// ==== Login ====
-window.login = function() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+// ==== Login (only if login elements exist) ====
+window.login = function () {
+  const emailEl = document.getElementById("email");
+  const passwordEl = document.getElementById("password");
+  if (!emailEl || !passwordEl) return; // not on login page
+
+  const email = emailEl.value;
+  const password = passwordEl.value;
   signInWithEmailAndPassword(auth, email, password)
     .then(() => {
       document.getElementById("loginStatus").innerText = "";
@@ -32,42 +36,56 @@ window.login = function() {
     });
 };
 
-// ==== Logout ====
-window.logout = function() {
+// ==== Logout (global) ====
+window.logout = function () {
   signOut(auth);
 };
 
 // ==== Auth state change ====
 onAuthStateChanged(auth, (user) => {
+  const loginPage = document.getElementById("loginPage");
+  const dashboard = document.getElementById("dashboard");
+
   if (user) {
     currentUserEmail = user.email;
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-    loadTasks();
+
+    if (loginPage) loginPage.style.display = "none";
+    if (dashboard) dashboard.style.display = "block";
+
+    // Only load tasks if daily page is open
+    if (document.getElementById("myTasks")) {
+      loadTasks();
+    }
   } else {
-    document.getElementById("loginPage").style.display = "block";
-    document.getElementById("dashboard").style.display = "none";
+    if (loginPage) loginPage.style.display = "block";
+    if (dashboard) dashboard.style.display = "none";
   }
 });
 
-// ==== Add task ====
+// ==== Add task (only works if daily page exists) ====
 window.addTask = async function () {
-  const taskText = document.getElementById("newTask").value;
+  const newTaskInput = document.getElementById("newTask");
+  if (!newTaskInput) return; // not on daily page
+
+  const taskText = newTaskInput.value;
   if (taskText.trim() === "") return;
   await addDoc(collection(db, "tasks"), {
     text: taskText,
     owner: currentUserEmail,
     createdAt: Date.now()
   });
-  document.getElementById("newTask").value = "";
+  newTaskInput.value = "";
 };
 
-// ==== Load tasks ====
+// ==== Load tasks (daily page only) ====
 function loadTasks() {
+  const myTasksList = document.getElementById("myTasks");
+  const broTasksList = document.getElementById("broTasks");
+
+  if (!myTasksList || !broTasksList) return; // not on daily page
+
   const q = query(collection(db, "tasks"));
   onSnapshot(q, (snapshot) => {
-    const myTasksList = document.getElementById("myTasks");
-    const broTasksList = document.getElementById("broTasks");
     myTasksList.innerHTML = "";
     broTasksList.innerHTML = "";
 
@@ -81,24 +99,23 @@ function loadTasks() {
       span.onclick = () => markDoneAndDelete(docSnap.id);
 
       // Edit button
-      const editBtn = document.createElement("button");
-      editBtn.innerHTML = "✏️";
-      editBtn.classList.add("task-btn");
-      editBtn.onclick = () => editTask(docSnap.id, task.text);
-
-      // Delete button
-      const delBtn = document.createElement("button");
-      delBtn.innerHTML = "🗑️";
-      delBtn.classList.add("task-btn");
-      delBtn.onclick = () => deleteTask(docSnap.id);
-
-      li.appendChild(span);
-
       if (task.owner === currentUserEmail) {
+        const editBtn = document.createElement("button");
+        editBtn.innerHTML = "✏️";
+        editBtn.classList.add("task-btn");
+        editBtn.onclick = () => editTask(docSnap.id, task.text);
+
+        const delBtn = document.createElement("button");
+        delBtn.innerHTML = "🗑️";
+        delBtn.classList.add("task-btn");
+        delBtn.onclick = () => deleteTask(docSnap.id);
+
+        li.appendChild(span);
         li.appendChild(editBtn);
         li.appendChild(delBtn);
         myTasksList.appendChild(li);
       } else {
+        li.appendChild(span);
         broTasksList.appendChild(li);
       }
     });
