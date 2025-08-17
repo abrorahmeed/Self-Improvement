@@ -20,24 +20,26 @@ const db = getFirestore(app);
 let currentUserEmail = "";
 let currentUserUID = "";
 
-// ==== Login (only if login elements exist) ====
+// ==== Login ====
 window.login = function () {
   const emailEl = document.getElementById("email");
   const passwordEl = document.getElementById("password");
-  if (!emailEl || !passwordEl) return; // not on login page
+  if (!emailEl || !passwordEl) return;
 
   const email = emailEl.value;
   const password = passwordEl.value;
+
   signInWithEmailAndPassword(auth, email, password)
     .then(() => {
       document.getElementById("loginStatus").innerText = "";
+      window.location.href = 'daily.html'; // auto-redirect to daily
     })
     .catch((error) => {
       document.getElementById("loginStatus").innerText = error.message;
     });
 };
 
-// ==== Logout (global) ====
+// ==== Logout ====
 window.logout = function () {
   signOut(auth).then(() => {
     localStorage.removeItem("userUID");
@@ -49,37 +51,37 @@ window.logout = function () {
 onAuthStateChanged(auth, (user) => {
   const loginPage = document.getElementById("loginPage");
   const dashboard = document.getElementById("dashboard");
+  const dailyPage = document.getElementById("dailyPage");
 
   if (user) {
     currentUserEmail = user.email;
     currentUserUID = user.uid;
 
-    // ✅ Save user in localStorage for other pages
     localStorage.setItem("userUID", currentUserUID);
     localStorage.setItem("userEmail", currentUserEmail);
 
     if (loginPage) loginPage.style.display = "none";
     if (dashboard) dashboard.style.display = "block";
+    if (dailyPage) dailyPage.style.display = "block";
 
-    // Only load tasks if daily page is open
     if (document.getElementById("myTasks")) {
       loadTasks();
     }
   } else {
     if (loginPage) loginPage.style.display = "block";
     if (dashboard) dashboard.style.display = "none";
+    if (dailyPage) dailyPage.style.display = "none";
   }
 });
 
-// ==== Add task (only works if daily page exists) ====
+// ==== Add task ====
 window.addTask = async function () {
   const newTaskInput = document.getElementById("newTask");
-  if (!newTaskInput) return; // not on daily page
+  if (!newTaskInput) return;
 
   const taskText = newTaskInput.value;
   if (taskText.trim() === "") return;
 
-  // ✅ Use UID as owner
   await addDoc(collection(db, "tasks"), {
     text: taskText,
     owner: currentUserUID,
@@ -90,12 +92,11 @@ window.addTask = async function () {
   newTaskInput.value = "";
 };
 
-// ==== Load tasks (daily page only) ====
+// ==== Load tasks ====
 function loadTasks() {
   const myTasksList = document.getElementById("myTasks");
   const broTasksList = document.getElementById("broTasks");
-
-  if (!myTasksList || !broTasksList) return; // not on daily page
+  if (!myTasksList || !broTasksList) return;
 
   const q = query(collection(db, "tasks"));
   onSnapshot(q, (snapshot) => {
@@ -106,12 +107,10 @@ function loadTasks() {
       const task = docSnap.data();
       const li = document.createElement("li");
 
-      // Task text (click = instantly delete)
       const span = document.createElement("span");
       span.textContent = task.text;
       span.onclick = () => markDoneAndDelete(docSnap.id);
 
-      // If it's mine → allow edit/delete
       if (task.owner === currentUserUID) {
         const editBtn = document.createElement("button");
         editBtn.innerHTML = "✏️";
@@ -135,7 +134,7 @@ function loadTasks() {
   });
 }
 
-// ==== Mark done -> delete instantly ====
+// ==== Mark done & delete ====
 async function markDoneAndDelete(id) {
   await deleteDoc(doc(db, "tasks", id));
 }
@@ -156,5 +155,5 @@ async function deleteTask(id) {
   }
 }
 
-
-export { auth, db, currentUserUID, currentUserEmail };
+// ✅ Export for daily.html
+export { auth, db, currentUserUID, currentUserEmail, loadTasks };
