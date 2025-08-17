@@ -155,3 +155,6 @@ async function deleteTask(id) {
     await deleteDoc(doc(db, "tasks", id));
   }
 }
+
+
+export { auth, db, currentUserUID, currentUserEmail };
