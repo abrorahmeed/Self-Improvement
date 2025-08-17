@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark-mode">
 
   <!-- ===== LOGIN PAGE ===== -->
   <div id="loginPage">
@@ -18,25 +18,16 @@
 
   <!-- ===== DASHBOARD ===== -->
   <div id="dashboard" style="display: none;">
-    <h1>Welcome</h1>
-    <button onclick="logout()">Logout</button>
+    <h1>Welcome to Self Improvement</h1>
 
-    <div class="task-container">
-      <!-- Your Tasks -->
-      <div class="task-card">
-        <h3>Your Tasks</h3>
-        <ul id="myTasks"></ul>
-        <input id="newTask" placeholder="New task">
-        <button onclick="addTask()">Add Task</button>
-      </div>
-
-      <!-- Brother's Tasks -->
-      <div class="task-card">
-        <h3>Brother's Tasks</h3>
-        <ul id="broTasks"></ul>
-      </div>
+        
+    <div style="text-align:center; margin-top:30px;">
+      <button class="monthly-btn" onclick="window.location.href='monthly.html'">
+        📈 Daily Plan
+      </button>
     </div>
 
+    
     <!-- ===== MONTHLY GOALS BUTTON ===== -->
     <div style="text-align:center; margin-top:30px;">
       <button class="monthly-btn" onclick="window.location.href='monthly.html'">
@@ -44,8 +35,6 @@
       </button>
     </div>
   </div>
-
-  <body class="dark-mode">
 
   <!-- ===== FIREBASE LOGIC ===== -->
   <script type="module" src="app.js"></script>
