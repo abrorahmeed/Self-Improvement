@@ -6,8 +6,8 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background: linear-gradient(135deg, #0f172a, #1a202c, #2d3748); /* Always dark */
+  font-family: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1a202c, #2d3748); /* Dark mode */
   color: #f7fafc;
   padding: 20px;
   min-height: 100vh;
@@ -18,7 +18,7 @@ body {
 #loginPage, #dashboard {
   max-width: 900px;
   margin: auto;
-  background: rgba(45, 55, 72, 0.9); /* Dark by default */
+  background: rgba(45, 55, 72, 0.9);
   color: #f7fafc;
   padding: 25px;
   border-radius: 16px;
@@ -31,15 +31,24 @@ body {
 /* ===== HEADINGS ===== */
 h1, h2, h3 {
   margin-bottom: 15px;
-  color: #e2e8f0; /* Light gray-blue */
+  color: #e2e8f0;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
 h1 {
-  font-size: 1.9rem;
+  font-size: 2.2rem;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+}
+
+/* ===== MOTIVATIONAL QUOTE ===== */
+#quote {
+  font-size: 1rem;
+  color: #a0aec0;
+  text-align: center;
+  margin-bottom: 25px;
+  font-style: italic;
 }
 
 /* ===== INPUTS ===== */
@@ -62,23 +71,27 @@ input:focus {
 }
 
 /* ===== BUTTONS ===== */
-button {
-  padding: 14px 18px;
+button, .menu-btn {
   background: linear-gradient(135deg, #4a90e2, #357abd);
-  color: white;
+  color: #fff;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 16px;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: 0.25s;
-  width: 100%;
+  padding: 18px;
+  margin: 10px auto;
+  display: block;
+  width: 250px;
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
-button:hover {
+button:hover, .menu-btn:hover {
+  transform: scale(1.05);
   background: linear-gradient(135deg, #357abd, #2f5f99);
 }
 
-button:active {
+button:active, .menu-btn:active {
   transform: scale(0.97);
 }
 
@@ -90,7 +103,7 @@ button:active {
 }
 
 .task-card {
-  background: #aabbd6; /* Gray Blue slate */
+  background: #2d3748; /* Dark card */
   color: #f7fafc;
   padding: 20px;
   border-radius: 12px;
@@ -100,7 +113,7 @@ button:active {
 }
 
 .task-card h3 {
-  color: #f7fafc; /* White headings */
+  color: #f7fafc;
 }
 
 ul {
@@ -113,7 +126,7 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #2d3748; /* Dark list items */
+  background: #374151;
   color: #edf2f7;
   padding: 12px;
   margin-bottom: 10px;
@@ -124,7 +137,7 @@ li {
 }
 
 li:hover {
-  background: #374151;
+  background: #4a5568;
 }
 
 li.completed {
@@ -176,6 +189,10 @@ li span {
   .task-btn {
     font-size: 16px;
     padding: 5px;
+  }
+
+  .menu-btn {
+    width: 100%;
   }
 }
 
